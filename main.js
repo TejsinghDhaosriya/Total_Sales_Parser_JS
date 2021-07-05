@@ -1,27 +1,17 @@
-const fs = require("fs");
-const filePath = "sales_input_data.txt";
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "Jun",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-let totalSales = 0;
+import fs from "fs";
+import months from "./year.js";
 
-let monthWiseSales = {};
+let totalSales = 0;
+let monthSales = {};
+
 months.forEach((month) => {
-  monthWiseSales[[month]] = {};
+  monthSales[[month]] = {};
 });
 
-let rows = fs.readFileSync(filePath, "utf-8").split("\n").filter(Boolean);
+let rows = fs
+  .readFileSync("sales_input_data.txt", "utf-8")
+  .split("\n")
+  .filter(Boolean);
 
 let dataset = rows.map((line) => {
   line = line.split(",");
@@ -36,16 +26,16 @@ let dataset = rows.map((line) => {
 
 dataset.shift();
 
-const getMonthsWiseSales = (item, month) => {
-  if (monthWiseSales[month].totalSales)
-    monthWiseSales[month].totalSales += parseInt(item.total_price);
+const monthsWiseSales = (item, month) => {
+  if (monthSales[month].totalSales)
+    monthSales[month].totalSales += parseInt(item.total_price);
   else {
-    monthWiseSales[month].totalSales = parseInt(item.total_price);
-    monthWiseSales[month]["most_popular"] = {};
-    monthWiseSales[month]["most_revenue"] = {};
-    monthWiseSales[month].min = Infinity;
-    monthWiseSales[month].max = 0;
-    monthWiseSales[month].count = 0;
+    monthSales[month].totalSales = parseInt(item.total_price);
+    monthSales[month]["popular"] = {};
+    monthSales[month]["revenue"] = {};
+    monthSales[month].min = Infinity;
+    monthSales[month].max = 0;
+    monthSales[month].count = 0;
   }
 };
 dataset.forEach((item) => {
@@ -53,85 +43,69 @@ dataset.forEach((item) => {
   let date = new Date(item.date);
   let monthIndex = date.getMonth();
   let month = months[monthIndex];
-  getMonthsWiseSales(item, month);
-  if (!monthWiseSales[month]["most_popular"][item.sku])
-    monthWiseSales[month]["most_popular"][item.sku] = parseInt(item.quantity);
-  else
-    monthWiseSales[month]["most_popular"][item.sku] += parseInt(item.quantity);
+  monthsWiseSales(item, month);
+  if (!monthSales[month]["popular"][item.sku])
+    monthSales[month]["popular"][item.sku] = parseInt(item.quantity);
+  else monthSales[month]["popular"][item.sku] += parseInt(item.quantity);
 
-  if (!monthWiseSales[month]["most_revenue"][item.total_price])
-    monthWiseSales[month]["most_revenue"][item.sku] = parseInt(
-      item.total_price
-    );
-  else
-    monthWiseSales[month]["most_revenue"][item.sku] += parseInt(
-      item.total_price
-    );
+  if (!monthSales[month]["revenue"][item.total_price])
+    monthSales[month]["revenue"][item.sku] = parseInt(item.total_price);
+  else monthSales[month]["revenue"][item.sku] += parseInt(item.total_price);
 });
 
-Object.keys(monthWiseSales).map(function (x) {
-  if (monthWiseSales[x].hasOwnProperty("most_popular")) {
+Object.keys(monthSales).map((month) => {
+  if (monthSales[month].hasOwnProperty("popular")) {
     let maxValue = Math.max.apply(
       null,
-      Object.keys(monthWiseSales[x]["most_popular"]).map(function (y) {
-        return monthWiseSales[x]["most_popular"][y];
+      Object.keys(monthSales[month]["popular"]).map(function (y) {
+        return monthSales[month]["popular"][y];
       })
     );
-    let maxKey = Object.keys(monthWiseSales[x]["most_popular"]).filter(
-      function (z) {
-        return monthWiseSales[x]["most_popular"][z] == maxValue;
-      }
-    )[0];
-    monthWiseSales[x]["most_popular"] = {};
-    monthWiseSales[x]["most_popular"][maxKey] = maxValue;
+    let maxKey = Object.keys(monthSales[month]["popular"]).filter(function (z) {
+      return monthSales[month]["popular"][z] == maxValue;
+    })[0];
+    monthSales[month]["popular"] = {};
+    monthSales[month]["popular"][maxKey] = maxValue;
   }
 
-  if (monthWiseSales[x].hasOwnProperty("most_revenue")) {
+  if (monthSales[month].hasOwnProperty("revenue")) {
     let maxValue = Math.max.apply(
       null,
-      Object.keys(monthWiseSales[x]["most_revenue"]).map(function (y) {
-        return monthWiseSales[x]["most_revenue"][y];
+      Object.keys(monthSales[month]["revenue"]).map(function (y) {
+        return monthSales[month]["revenue"][y];
       })
     );
-    let maxKey = Object.keys(monthWiseSales[x]["most_revenue"]).filter(
-      function (z) {
-        return monthWiseSales[x]["most_revenue"][z] == maxValue;
-      }
-    )[0];
-    monthWiseSales[x]["most_revenue"] = {};
-    monthWiseSales[x]["most_revenue"][maxKey] = maxValue;
+    let maxKey = Object.keys(monthSales[month]["revenue"]).filter(function (z) {
+      return monthSales[month]["revenue"][z] == maxValue;
+    })[0];
+    monthSales[month]["revenue"] = {};
+    monthSales[month]["revenue"][maxKey] = maxValue;
   }
-  return monthWiseSales[x];
+  return monthSales[month];
 });
 
 dataset.forEach((item) => {
   let date = new Date(item.date);
   let monthIndex = date.getMonth();
   let month = months[monthIndex];
-  if (monthWiseSales[month]) {
-    let sku = Object.keys(monthWiseSales[month]["most_popular"]);
+  if (monthSales[month]) {
+    let sku = Object.keys(monthSales[month]["popular"]);
     if (item.sku === sku[0]) {
-      monthWiseSales[month].min = Math.min(
-        monthWiseSales[month].min,
-        item.quantity
-      );
-      monthWiseSales[month].max = Math.max(
-        monthWiseSales[month].max,
-        item.quantity
-      );
-      monthWiseSales[month].count++;
+      monthSales[month].min = Math.min(monthSales[month].min, item.quantity);
+      monthSales[month].max = Math.max(monthSales[month].max, item.quantity);
+      monthSales[month].count++;
     }
   }
 });
 
-Object.keys(monthWiseSales).map(function (x) {
-  if (monthWiseSales[x]["most_popular"]) {
-    let total = Object.values(monthWiseSales[x]["most_popular"]);
-    monthWiseSales[x]["avg"] = total[0] / monthWiseSales[x]["count"];
-    delete monthWiseSales[x]["count"];
+Object.keys(monthSales).map((month) => {
+  if (monthSales[month]["popular"]) {
+    let total = Object.values(monthSales[month]["popular"]);
+    monthSales[month]["avg"] = total[0] / monthSales[month]["count"];
+    delete monthSales[month]["count"];
   }
-  return monthWiseSales[x];
+  return monthSales[month];
 });
 
-console.log("totalSales", totalSales);
-console.log("monthWiseSales", monthWiseSales);
+console.log("Total Sales", totalSales);
+console.log("Month Sales", monthSales);
