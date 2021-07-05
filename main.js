@@ -33,8 +33,8 @@ const monthsWiseSales = (item, month) => {
     monthSales[month].totalSales = parseInt(item.total_price);
     monthSales[month]["popular"] = {};
     monthSales[month]["revenue"] = {};
-    monthSales[month].min = Infinity;
-    monthSales[month].max = 0;
+    monthSales[month].minimum = Infinity;
+    monthSales[month].maximum = 0;
     monthSales[month].count = 0;
   }
 };
@@ -91,8 +91,8 @@ dataset.forEach((item) => {
   if (monthSales[month]) {
     let sku = Object.keys(monthSales[month]["popular"]);
     if (item.sku === sku[0]) {
-      monthSales[month].min = Math.min(monthSales[month].min, item.quantity);
-      monthSales[month].max = Math.max(monthSales[month].max, item.quantity);
+      monthSales[month].minimum = Math.min(monthSales[month].minimum, item.quantity);
+      monthSales[month].maximum = Math.max(monthSales[month].maximum, item.quantity);
       monthSales[month].count++;
     }
   }
@@ -101,7 +101,7 @@ dataset.forEach((item) => {
 Object.keys(monthSales).map((month) => {
   if (monthSales[month]["popular"]) {
     let total = Object.values(monthSales[month]["popular"]);
-    monthSales[month]["avg"] = total[0] / monthSales[month]["count"];
+    monthSales[month]["average"] = total[0] / monthSales[month]["count"];
     delete monthSales[month]["count"];
   }
   return monthSales[month];
