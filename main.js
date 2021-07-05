@@ -13,14 +13,14 @@ let rows = fs
   .split("\n")
   .filter(Boolean);
 
-let dataset = rows.map((line) => {
-  line = line.split(",");
+let dataset = rows.map((row) => {
+  row = row.split(",");
   return {
-    date: line[0],
-    sku: line[1],
-    unit_price: line[2],
-    quantity: line[3],
-    total_price: line[4].trim(),
+    date: row[0],
+    sku: row[1],
+    unit_price: row[2],
+    quantity: row[3],
+    total_price: row[4].trim(),
   };
 });
 
