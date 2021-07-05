@@ -4,25 +4,25 @@ Month Sales {
     totalSales: 1421330,
     popular: { 'Hot Chocolate Fudge': 2673 },
     revenue: { 'Hot Chocolate Fudge': 600 },
-    min: 1,
-    max: 5,
-    avg: 3.0306122448979593
+    minimum: 1,
+    maximum: 5,
+    average: 3.0306122448979593
   },
   February: {
     totalSales: 1422350,
     popular: { 'Hot Chocolate Fudge': 2636 },
     revenue: { 'Dew Drop Sundae': 750 },
-    min: 1,
-    max: 5,
-    avg: 3.0975323149236194
+    minimum: 1,
+    maximum: 5,
+    average: 3.0975323149236194
   },
   March: {
     totalSales: 1739590,
     popular: { 'Hot Chocolate Fudge': 3100 },
     revenue: { 'Death by Chocolate': 900 },
-    min: 1,
-    max: 5,
-    avg: 2.9551954242135365
+    minimum: 1,
+    maximum: 5,
+    average: 2.9551954242135365
   },
   April: {},
   May: {},
