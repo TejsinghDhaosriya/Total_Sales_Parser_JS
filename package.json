@@ -1,0 +1,19 @@
+{
+  "name": "sales",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TejsinghDhaosriya/Total_Sales_Parser_JS.git"
+  },
+  "author": "Tejsingh Dhaosriya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TejsinghDhaosriya/Total_Sales_Parser_JS/issues"
+  },
+  "homepage": "https://github.com/TejsinghDhaosriya/Total_Sales_Parser_JS#readme"
+}
